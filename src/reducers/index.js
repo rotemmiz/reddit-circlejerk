@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 
-import search from './search/search';
+import game from './game/reducer';
 
 export default combineReducers({
-  search,
+  game,
 });

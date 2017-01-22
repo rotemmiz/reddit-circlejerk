@@ -20,10 +20,5 @@ Navigation.startTabBasedApp({
       screen: 'reci.MainScreen',
       title: 'Search'
     },
-    {
-      label: 'Test',
-      screen: 'reci.TestScreen',
-      title: 'Test'
-    },
   ]
 });

@@ -20,6 +20,10 @@ class MainScreen extends Component {
 
   onPressRandom() {
     this.props.dispatch(searchActions.onClickRandom());
+    this.props.navigator.push({
+      screen: 'reci.GameScreen',
+      title: 'Game'
+    })
   }
 
   render() {
