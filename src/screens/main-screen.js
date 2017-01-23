@@ -18,6 +18,14 @@ class MainScreen extends Component {
     autoBind(this);
   }
 
+  componentWillMount() {
+    this.props.dispatch(searchActions.onClickRandom());
+    this.props.navigator.push({
+      screen: 'reci.GameScreen',
+      title: 'Game'
+    });
+  }
+
   onPressRandom() {
     this.props.dispatch(searchActions.onClickRandom());
     this.props.navigator.push({

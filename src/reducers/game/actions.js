@@ -1,7 +1,8 @@
 import R from 'ramda';
 
 import { loadComments } from '../../services/api';
-import { getRandomValuesFromArray, returnMaximumProp } from '../../utils';
+import getRandomValuesFromArray from '../../utils/get-random-values-from-array';
+import getMaximumProp from '../../utils/get-maximum-prop';
 import { getCommentById } from './reducer';
 
 import * as types from './action-types';
@@ -15,6 +16,7 @@ export function afterLoadPosts(posts) {
 
     const { game } = getState();
 
+    //const { id, permalink } = game.posts[game.availablePosts[Math.floor(Math.random() * game.availablePosts.length)]];
     const { id, permalink } = game.posts[game.availablePosts[0]];
 
     dispatch({
@@ -27,7 +29,7 @@ export function afterLoadPosts(posts) {
 
     const comments = await loadComments(permalink);
 
-    const randomComments = getRandomValuesFromArray(4, comments);
+    const randomComments = getRandomValuesFromArray(10, comments);
 
     dispatch({
       type: types.AFTER_LOAD_COMMENTS,
@@ -41,7 +43,7 @@ export function onClickComment(commentId) {
   return async (dispatch, getState) => {
     const { game } = getState();
 
-    const maxCommentsScore = returnMaximumProp('score', game.comments);
+    const maxCommentsScore = getMaximumProp('score', game.comments);
 
     const currentCommentScore = getCommentById(commentId, game).score;
 

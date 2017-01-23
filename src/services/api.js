@@ -1,4 +1,5 @@
-import { getPosts, getComments } from '../utils';
+import { getComments } from './comments';
+import { transformResponseIntoPosts } from './posts';
 
 const apiRoute = 'https://www.reddit.com';
 
@@ -29,7 +30,7 @@ export async function getTopPosts(subredditName) {
 
     const json = await response.json();
 
-    return getPosts(json.data.children);
+    return transformResponseIntoPosts(4)(json.data.children);
 
   } catch(e) {
     console.error('failed to get random post from subreddit', subredditName, e);

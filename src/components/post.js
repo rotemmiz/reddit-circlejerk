@@ -1,53 +1,51 @@
 import React, { PropTypes } from 'react';
 import {
   View,
+  Animated,
   Text,
   StyleSheet,
   Image,
 } from 'react-native';
 
-const Comments = ({ thumbnail, url, subreddit, title, num_comments, ups }) => {
-
-  console.log(url);
+const Post = ({ height, thumbnail, url, subreddit, title, num_comments, ups }) => {
 
   return (
-    <View style={ styles.container }>
+    <Animated.View style={ [styles.container, { height }] }>
       <View style={ styles.flexContainer }>
         { thumbnail !== 'self' &&
         <Image
           source={ { uri: url } }
+          resizeMode='cover'
           style={{
-              width: 150,
-              height: 100,
-            }}
+              width: null,
+              flex: 1,
+              height: null,
+          }}
         />
         }
       </View>
-      <View style={ styles.flexContainer }>
-        <Text style={ styles.body }>{ title }</Text>
-        <View style={ styles.infoContainer }>
-          <Text style={ styles.subreddit }>Subreddit: { subreddit }</Text>
-          <View style={ styles.moreInfo}>
-            <Text style={ styles.comments }>Comments: { num_comments }</Text>
-            <Text>Score: { ups }</Text>
-          </View>
-        </View>
-      </View>
-    </View>
+      {/*<View style={ styles.flexContainer }>*/}
+        {/*<Text style={ styles.body }>{ title }</Text>*/}
+        {/*<View style={ styles.infoContainer }>*/}
+          {/*<Text style={ styles.subreddit }>Subreddit: { subreddit }</Text>*/}
+          {/*<View style={ styles.moreInfo}>*/}
+            {/*<Text style={ styles.comments }>Comments: { num_comments }</Text>*/}
+            {/*<Text>Score: { ups }</Text>*/}
+          {/*</View>*/}
+        {/*</View>*/}
+      {/*</View>*/}
+    </Animated.View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     backgroundColor: 'white',
-    flexDirection: 'row',
-    marginTop: 10,
-    marginBottom: 10,
-    paddingTop: 10,
-    paddingBottom: 10,
-    paddingLeft: 5,
-    paddingRight: 5,
-    borderRadius: 3,
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    overflow: 'hidden',
   },
   body: {
     fontSize: 20,
@@ -65,11 +63,12 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   flexContainer: {
+    alignItems: 'stretch',
     flex: 1,
   }
 });
 
-Comments.propTypes = {
+Post.propTypes = {
   title: PropTypes.string,
   subreddit: PropTypes.string,
   comments: PropTypes.number,
@@ -78,4 +77,4 @@ Comments.propTypes = {
   url: PropTypes.string,
 };
 
-export default Comments;
+export default Post;

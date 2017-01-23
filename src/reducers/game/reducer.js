@@ -2,7 +2,7 @@ import R from 'ramda';
 
 import * as types from './action-types';
 
-import { returnMaximumProp } from '../../utils';
+import getMaximumProp from '../../utils/get-maximum-prop';
 
 function getInitialState() {
   return {
@@ -12,7 +12,7 @@ function getInitialState() {
     comments: [],
     score: 0,
     lives: 3,
-    showTitle: true,
+    showPost: true,
     showAnswer: false,
     loading: true,
   };
@@ -56,26 +56,43 @@ export default function (state = getInitialState(), { type, payload }) {
 };
 
 export function getCurrentLevel(state) {
-  return R.keys(state.posts).length - state.availablePosts.length;
+  return R.keys(state.game.posts).length - state.game.availablePosts.length;
 }
 
 export function getTotalLevels(state) {
-  return R.keys(state.posts).length;
+  return R.keys(state.game.posts).length;
 }
 
 export function getCurrentPost(state) {
-  return state.posts[state.currentPost];
+  return state.game.posts[state.game.currentPost];
 }
 
 export function getCommentById(commentId, state) {
-  return R.find(R.propEq('id', commentId), state.comments);
+  return R.find(R.propEq('id', commentId), state.game.comments);
 }
 
 export function getComments(state) {
-  const maxCommentsScore = returnMaximumProp('score', state.comments);
+  const maxCommentsScore = getMaximumProp('score', state.game.comments);
 
-  return state.comments.map(comment => ({
+  return state.game.comments.map(comment => ({
     ...comment,
     correct: maxCommentsScore === comment.score,
   }));
+}
+
+export function getScoreInfo(state) {
+  return {
+    score: state.game.score,
+    lives: state.game.lives,
+    currentLevel: getCurrentLevel(state),
+    totalLevels: getTotalLevels(state),
+  };
+}
+
+export function getSettings(state) {
+  return R.pick(['showPost', 'showAnswer'], state.game);
+}
+
+export function getLoading(state) {
+  return state.game.loading;
 }

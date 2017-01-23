@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 
 import autoBind from 'auto-bind';
+import Markdown from 'react-native-simple-markdown';
 
 const getResultStyles = (style, showAnswer, correct) => ([
   style,
@@ -48,7 +49,7 @@ class Comment extends Component {
 
     return (
       <TouchableOpacity onPress={ this.onPress } style={ containerStyles }>
-        <Text style={ bodyStyles }>{ body }</Text>
+        <Markdown styles={ bodyStyles }>{ body }</Markdown>
         { showAnswer &&
           <Text style={ scoreStyles }>{ score }</Text>
         }
@@ -63,8 +64,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     marginLeft: 5,
     marginRight: 5,
-    marginTop: 5,
-    marginBottom: 5,
+    marginBottom: 10,
     paddingTop: 10,
     paddingBottom: 10,
     paddingLeft: 5,

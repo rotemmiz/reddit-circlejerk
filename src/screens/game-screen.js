@@ -8,6 +8,8 @@ import {
   ScrollView,
   ActivityIndicator,
   StyleSheet,
+  Animated,
+  Dimensions,
 } from 'react-native';
 
 import { connect } from 'react-redux';
@@ -19,27 +21,42 @@ import Comment from '../components/comment';
 import Post from '../components/post';
 import Score from '../components/score';
 
-import { getComments, getCurrentPost, getCurrentLevel, getTotalLevels } from '../reducers/game/reducer';
+import {
+  getComments, getCurrentPost, getCurrentLevel, getTotalLevels, getScoreInfo, getSettings, getLoading
+} from '../reducers/game/reducer';
+
+const window = Dimensions.get('window');
+
+const HEADER_MAX_HEIGHT = window.height;
+const INITIAL_SCROLL = 300;
 
 class GameScreen extends Component {
 
+  static navigatorStyle = {
+    drawUnderNavBar: false,
+    navBarTranslucent: false,
+    navBarButtonColor: '#00adf5',
+    tabBarHidden: true
+  };
+
   static propTypes = {
-    lives: PropTypes.number,
-    score: PropTypes.number,
     loading: PropTypes.bool,
     showAnswer: PropTypes.bool,
-    showTitle: PropTypes.bool,
+    showPost: PropTypes.bool,
     comments: PropTypes.array,
     post: PropTypes.shape({
       title: PropTypes.string,
     }),
-    currentLevel: PropTypes.number,
-    totalLevels: PropTypes.number,
+    scoreInfo: PropTypes.object,
   };
 
   constructor() {
     super();
     autoBind(this);
+
+    this.state = {
+      scrollY: new Animated.Value(INITIAL_SCROLL),
+    };
   }
 
   onPressComment(commentId) {
@@ -48,9 +65,13 @@ class GameScreen extends Component {
 
   render() {
 
+    const headerHeight = this.state.scrollY.interpolate({
+      inputRange: [0, HEADER_MAX_HEIGHT],
+      outputRange: [HEADER_MAX_HEIGHT, 0],
+    });
+
     const {
-      lives, score, currentLevel, totalLevels,
-      loading, comments, showTitle, post, showAnswer,
+      scoreInfo, loading, comments, showPost, post, showAnswer,
     } = this.props;
 
     if (comments.length === 0) {
@@ -64,33 +85,42 @@ class GameScreen extends Component {
 
     return (
       <View style={ styles.container }>
-        <Score
-          currentLevel={ currentLevel }
-          totalLevels={ totalLevels }
-          score={ score }
-          lives={ lives }
-        />
+        <Score { ...scoreInfo } />
         { loading &&
           <ActivityIndicator
             animating={ loading }
             style={ styles.indicator }
           />
         }
-        { showTitle &&
-          <Post { ...post } />
-        }
-        <ScrollView style={ styles.container }>
-          { !loading &&
-            comments.map(comment =>
-              <Comment
-                { ...comment }
-                key={ comment.id }
-                showAnswer={ showAnswer }
-                onPress={ this.onPressComment }
-              />
-            )
+        <View style={ styles.container }>
+          <ScrollView
+            scrollEventThrottle={ 16 }
+            showsVerticalScrollIndicator={ false }
+            contentOffset={ { y: INITIAL_SCROLL } }
+            onScroll={
+              Animated.event([
+                { nativeEvent: { contentOffset: { y: this.state.scrollY } } }
+              ])
+            }
+            style={ styles.container }
+          >
+            <View style={ styles.scrollContainer }>
+              { !loading &&
+              comments.map(comment =>
+                <Comment
+                  { ...comment }
+                  key={ comment.id }
+                  showAnswer={ showAnswer }
+                  onPress={ this.onPressComment }
+                />
+              )
+              }
+            </View>
+          </ScrollView>
+          { showPost &&
+            <Post { ...post } height={headerHeight} />
           }
-        </ScrollView>
+        </View>
       </View>
     );
   }
@@ -101,6 +131,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#f3f3f3',
     flex: 1,
   },
+  scrollContainer: {
+    backgroundColor: '#f3f3f3',
+    marginTop: HEADER_MAX_HEIGHT,
+    paddingTop: 5,
+  },
   indicator: {
     marginTop: 20,
   },
@@ -108,11 +143,11 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
   return {
-    ...R.pick(['showTitle', 'loading', 'lives', 'score', 'showAnswer'], state.game),
-    comments: getComments(state.game),
-    post: getCurrentPost(state.game),
-    currentLevel: getCurrentLevel(state.game),
-    totalLevels: getTotalLevels(state.game),
+    scoreInfo: getScoreInfo(state),
+    ...getSettings(state),
+    loading: getLoading(state),
+    comments: getComments(state),
+    post: getCurrentPost(state),
   };
 };
 
