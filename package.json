@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
-    "test": "jest"
+    "test": "jest",
+    "e2e": "mocha e2e --opts ./e2e/mocha.opts --scheme=ios-simulator.debug",
+    "detox-server": "detox-server"
   },
   "dependencies": {
     "auto-bind": "^1.0.0",
@@ -16,15 +18,27 @@
     "react-native-simple-markdown": "^1.0.60-rc.3",
     "react-redux": "^5.0.2",
     "redux": "^3.6.0",
-    "redux-thunk": "^2.2.0"
-  },
-  "jest": {
-    "preset": "react-native"
+    "redux-thunk": "^2.2.0",
+    "detox": "^4.1.4",
+    "detox-server": "^1.1.0"
   },
   "devDependencies": {
     "babel-jest": "18.0.0",
     "babel-preset-react-native": "1.9.1",
     "jest": "18.1.0",
     "react-test-renderer": "15.4.2"
+  },
+  "jest": {
+    "preset": "react-native"
+  },
+  "detox": {
+    "session": {
+      "server": "ws://localhost:8099",
+      "sessionId": "RedditCirclejerk"
+    },
+    "ios-simulator.debug": {
+      "app": "ios/build/Build/Products/Debug-iphonesimulator/RedditCirclejerk.app",
+      "device": "iPhone 7, iOS 10.1"
+    }
   }
 }

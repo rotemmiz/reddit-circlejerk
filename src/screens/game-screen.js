@@ -83,7 +83,7 @@ class GameScreen extends Component {
     }
 
     return (
-      <View style={ styles.container }>
+      <View testID='container' style={ styles.container }>
         <Score { ...scoreInfo } />
         { loading &&
           <ActivityIndicator
