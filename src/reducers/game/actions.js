@@ -2,8 +2,7 @@ import R from 'ramda';
 
 import { loadComments } from '../../services/api';
 import getRandomValuesFromArray from '../../utils/get-random-values-from-array';
-import getMaximumProp from '../../utils/get-maximum-prop';
-import { getCommentById } from './reducer';
+import { getPostByNumberInRow, getCommentById, getCommentWithMaximumScore, getAvailablePosts } from './reducer';
 
 import * as types from './action-types';
 
@@ -14,16 +13,16 @@ export function afterLoadPosts(posts) {
       payload: posts,
     });
 
-    const { game } = getState();
+    const state = getState();
 
     //const { id, permalink } = game.posts[game.availablePosts[Math.floor(Math.random() * game.availablePosts.length)]];
-    const { id, permalink } = game.posts[game.availablePosts[0]];
+    const { id, permalink } = getPostByNumberInRow(state, 0);
 
     dispatch({
       type: types.SET_CURRENT_POST,
       payload: {
         currentPost: id,
-        availablePosts: R.tail(game.availablePosts)
+        availablePosts: R.tail(getAvailablePosts(state))
       },
     });
 
@@ -41,11 +40,11 @@ export function afterLoadPosts(posts) {
 
 export function onClickComment(commentId) {
   return async (dispatch, getState) => {
-    const { game } = getState();
+    const state = getState();
 
-    const maxCommentsScore = getMaximumProp('score', game.comments);
+    const maxCommentsScore = getCommentWithMaximumScore(state).score;
 
-    const currentCommentScore = getCommentById(commentId, game).score;
+    const currentCommentScore = getCommentById(commentId, state).score;
 
     if (maxCommentsScore === currentCommentScore) {
       dispatch({

@@ -1,5 +1,4 @@
 import React, { Component, PropTypes } from 'react';
-import R from 'ramda';
 
 import {
   View,
@@ -22,7 +21,7 @@ import Post from '../components/post';
 import Score from '../components/score';
 
 import {
-  getComments, getCurrentPost, getCurrentLevel, getTotalLevels, getScoreInfo, getSettings, getLoading
+  getComments, getCurrentPost, getScoreInfo, getSettings, getLoading
 } from '../reducers/game/reducer';
 
 const window = Dimensions.get('window');

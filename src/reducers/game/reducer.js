@@ -2,7 +2,7 @@ import R from 'ramda';
 
 import * as types from './action-types';
 
-import getMaximumProp from '../../utils/get-maximum-prop';
+import getObjectByMaximumProp from '../../utils/get-maximum-prop';
 
 function getInitialState() {
   return {
@@ -72,7 +72,7 @@ export function getCommentById(commentId, state) {
 }
 
 export function getComments(state) {
-  const maxCommentsScore = getMaximumProp('score', state.game.comments);
+  const maxCommentsScore = getCommentWithMaximumScore(state).score;
 
   return state.game.comments.map(comment => ({
     ...comment,
@@ -95,4 +95,16 @@ export function getSettings(state) {
 
 export function getLoading(state) {
   return state.game.loading;
+}
+
+export function getCommentWithMaximumScore(state) {
+  return getObjectByMaximumProp('score', state.game.comments);
+}
+
+export function getPostByNumberInRow(state, number) {
+  return state.game.posts[state.game.availablePosts[number]];
+}
+
+export function getAvailablePosts(state) {
+  return state.game.availablePosts;
 }

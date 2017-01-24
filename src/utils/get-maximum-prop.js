@@ -1,16 +1,16 @@
 import R from 'ramda';
 
-export default getMaximumProp = (prop, values) => {
+export default getObjectByMaximumProp = (prop, values) => {
 
   if (values.length === 0) {
-    return null;
+    return {};
   }
 
   const propValue = R.prop(prop);
 
   return R.reduce(
-    (acc, cur) => R.max(acc, propValue(cur)),
-    propValue(values[0]),
+    R.maxBy(propValue),
+    values[0],
     values
   );
 };
